@@ -16,7 +16,7 @@ import java.net.URLEncoder
 @Service
 class S3Service(
     private val amazonS3: AmazonS3,
-    @Value("\${nozzle.aws.s3.bucketName}")
+    @Value("\${nfthub.aws.s3.bucketName}")
     private val bucketName: String
 ) {
 

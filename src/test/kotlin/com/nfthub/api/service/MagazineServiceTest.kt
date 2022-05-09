@@ -83,8 +83,8 @@ class MagazineServiceTest(
                 title = "title",
                 description = "description",
                 category = categories[0].toResponse(),
-                keywords = keywords
-            ), createdMagazineResponse
+                keywords = keywords.map { it.toResponse() }
+            ).toString(), createdMagazineResponse.toString()
         )
     }
 
@@ -103,50 +103,11 @@ class MagazineServiceTest(
         )
         assertEquals(
             MagazineResponse(
+                id = magazineResponse.id,
                 title = "newTitle", description = "description",
-                category = categories[1].toResponse(), keywords = listOf(keywords[1])
+                category = categories[1].toResponse(), keywords = listOf(keywords[1].toResponse())
             ), magazineResponse
         )
-    }
-
-    @Test
-    fun `updateMagazineKeywords`() {
-        val createdMagazine = magazineRepository.save(
-            Magazine()
-        )
-        magazineService.updateMagazineKeywords(
-            createdMagazine.id, keywords.map { it.id }
-        )
-        val magazineRes = magazineService.getMagazineOrThrow(createdMagazine.id)
-        assertEquals(
-            MagazineResponse(
-                id = createdMagazine.id,
-                title = "title",
-                keywords = keywords
-            ), magazineRes
-        )
-    }
-
-    @Test
-    fun `updateMagazineKeywords - 키워드가 없으면 throw`() {
-        val createdMagazine = magazineRepository.save(
-            Magazine()
-        )
-        assertThrows<NotFoundException> {
-            magazineService.updateMagazineKeywords(
-                createdMagazine.id, keywords.map { it.id + 10 }
-            )
-        }
-    }
-
-    @Test
-    fun `updateMagazineCategory`() {
-        val createdMagazine = magazineRepository.save(
-            Magazine()
-        )
-        magazineService.updateMagazineCategory(createdMagazine.id, categories[0].id)
-        val magazineRes = magazineRepository.findByIdOrNull(createdMagazine.id)
-        assertEquals(categories[0].id, magazineRes?.category?.id)
     }
 
     @Test
@@ -161,7 +122,7 @@ class MagazineServiceTest(
         } returns "a"
 
         // when
-        magazineService.createMagazineImage(createdMagazine.id, mockFileA)
+        magazineService.createMagazineImage(createdMagazine.id, listOf(mockFileA))
         val magazine = magazineRepository.findByIdOrNull(createdMagazine.id)
         // then
         assertEquals(true, magazine?.images?.all { it.url == "a" })

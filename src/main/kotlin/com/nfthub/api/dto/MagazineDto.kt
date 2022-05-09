@@ -3,12 +3,9 @@ package com.nfthub.api.dto
 import com.nfthub.api.EMPTY_STRING
 import com.nfthub.api.RequestMapper
 import com.nfthub.api.ResponseMapper
-import com.nfthub.api.entity.Keyword
 import com.nfthub.api.entity.Magazine
 import com.nfthub.api.entity.MagazineImage
-import org.mapstruct.AfterMapping
 import org.mapstruct.Mapper
-import org.mapstruct.MappingTarget
 import org.mapstruct.factory.Mappers
 
 
@@ -25,7 +22,7 @@ data class MagazineResponse(
     var url: String = EMPTY_STRING,
     var author: String = EMPTY_STRING,
     var category: CategoryResponse? = null,
-    var keywords: List<Keyword> = emptyList(),
+    var keywords: List<KeywordResponse> = emptyList(),
     var images: List<MagazineImageResponse> = emptyList()
 )
 
@@ -34,8 +31,8 @@ data class MagazineCreateRequest(
     var description: String = EMPTY_STRING,
     var url: String = EMPTY_STRING,
     var author: String = EMPTY_STRING,
-    var categoryId: Long = 0,
-    var keywordIds: List<Long> = emptyList()
+    var categoryId: Long? = null,
+    var keywordIds: List<Long>? = null
 )
 
 data class MagazineUpdateRequest(
@@ -43,26 +40,27 @@ data class MagazineUpdateRequest(
     var description: String? = null,
     var url: String? = null,
     var author: String? = null,
-    var categoryId: Long? = null,
-    var keywordIds: List<Long> = emptyList()
+    val categoryId: Long? = null,
+    val keywordIds: List<Long>? = null
 )
 
 @Mapper
 interface MagazineImageMapper : ResponseMapper<MagazineImageResponse, MagazineImage> {
     companion object {
-        val INSTANCE = Mappers.getMapper(MagazineImageMapper::class.java)
+        val INSTANCE: MagazineImageMapper = Mappers.getMapper(MagazineImageMapper::class.java)
     }
 }
 
 @Mapper(uses = [CategoryMapper::class, MagazineImageMapper::class])
 interface MagazineMapper : ResponseMapper<MagazineResponse, Magazine>, RequestMapper<MagazineCreateRequest, Magazine> {
     companion object {
-        val INSTANCE = Mappers.getMapper(MagazineMapper::class.java)
-    }
-
-    @AfterMapping
-    fun setKeywordToResponse(magazine: Magazine, @MappingTarget magazineResponse: MagazineResponse) {
-        magazineResponse.keywords = magazine.magazineKeywords.map { it.keyword }
+        val INSTANCE: MagazineMapper = Mappers.getMapper(MagazineMapper::class.java)
     }
 }
+
+fun Magazine.toResponse() = MagazineMapper.INSTANCE.fromEntity(this).also { response ->
+    response.keywords = this.magazineKeywords.map { it.keyword.toResponse() }
+}
+
+fun MagazineCreateRequest.toEntity() = MagazineMapper.INSTANCE.toEntity(this)
 

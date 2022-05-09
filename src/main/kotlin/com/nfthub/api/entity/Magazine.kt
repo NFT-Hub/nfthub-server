@@ -6,7 +6,7 @@ import javax.persistence.*
 @Entity
 @Table
 class Magazine(
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     var id: Long = 0,
 
@@ -27,7 +27,7 @@ class Magazine(
     var magazineKeywords: List<MagazineKeyword> = emptyList(),
 
     @OneToMany(mappedBy = "magazine", orphanRemoval = true, cascade = [CascadeType.ALL])
-    var images: List<MagazineImage> = emptyList(),
+    var images: MutableList<MagazineImage> = mutableListOf(),
 
     ) : BaseTimeEntity()
 
