@@ -40,7 +40,7 @@ cloud:
     region:
       static: ap-northeast-2
 
-narea-mall:
+nfthub:
   aws:
     s3:
       bucketName: narea-mall-develop
