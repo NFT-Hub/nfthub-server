@@ -5,7 +5,7 @@ import javax.persistence.*
 
 @Entity
 @Table
-class Keyword(
+class Tag(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     var id: Long = 0,

@@ -16,7 +16,7 @@ class Artist(
     var category: Category? = null,
 
     @OneToMany(mappedBy = "artist", orphanRemoval = true, cascade = [CascadeType.ALL])
-    var artistKeywords: List<ArtistKeyword> = emptyList(),
+    var artistTags: List<ArtistTag> = emptyList(),
 
     @OneToMany(mappedBy = "artist", orphanRemoval = true, cascade = [CascadeType.ALL])
     var artistImages: List<ArtistImage> = emptyList(),
@@ -27,7 +27,7 @@ class Artist(
 
 @Entity
 @Table
-class ArtistKeyword(
+class ArtistTag(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     var id: Long = 0,

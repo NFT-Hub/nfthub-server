@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import javax.validation.Valid
 
-@Tag(name = "magazine", description = "매거진 api")
+@Tag(name = "magazine api", description = "매거진 api")
 @RequestMapping("/api/v1/magazines")
 @RestController
 class MagazineController(
     private val magazineService: MagazineService
 ) {
-    @Operation(summary = "매거진 리스트 조회 [미구현]")
+    @Operation(summary = "매거진 리스트 조회 ")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "정상응답"),
         ApiResponse(responseCode = "404", description = "찾을 수 없음"),
@@ -54,7 +54,7 @@ class MagazineController(
             Parameter(
                 `in` = ParameterIn.QUERY,
                 description = "키워드 입력, 여러개 사용 가능",
-                name = "keywordId",
+                name = "tagId",
                 array = ArraySchema(schema = Schema(type = "integer"))
             ),
             Parameter(
@@ -66,7 +66,7 @@ class MagazineController(
             Parameter(
                 `in` = ParameterIn.QUERY,
                 description = "검색어 입력",
-                name = "searchKeyword",
+                name = "searchTag",
                 schema = Schema(type = "String")
             ),
         ]
@@ -75,14 +75,14 @@ class MagazineController(
     fun getMagazineResponses(
         @PageableDefault
         @Parameter(hidden = true) pageable: Pageable,
-        @RequestParam(required = false) keywordIds: List<Long>?,
+        @RequestParam(required = false) tagIds: List<Long>?,
         @RequestParam(required = false) categoryIds: List<Long>?,
-        @RequestParam(required = false) searchKeyword: String?
+        @RequestParam(required = false) searchTag: String?
     ): Page<MagazineResponse> = magazineService.getMagazineResponses(
-        pageable, keywordIds, categoryIds, searchKeyword
+        pageable, tagIds, categoryIds, searchTag
     )
 
-    @Operation(summary = "[어드민] 매거진 조회")
+    @Operation(summary = "매거진 조회")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "정상응답"),
         ApiResponse(responseCode = "404", description = "찾을 수 없음"),
@@ -91,8 +91,16 @@ class MagazineController(
     fun getMagazineResponse(
         @PathVariable magazineId: Long
     ) = magazineService.getMagazineResponse(magazineId)
+}
 
-    @Operation(summary = "[어드민] 매거진 생성", description = "어드민 전용")
+@Tag(name = "magazine manage", description = "어드민 매거진 api")
+@RequestMapping("/manage/v1/magazines")
+@RestController
+class ManageMagazineController(
+    private val magazineService: MagazineService
+) {
+
+    @Operation(summary = "어드민 매거진 생성", description = "어드민 전용")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "정상응답"),
         ApiResponse(responseCode = "401", description = "인증 필요"),
@@ -103,7 +111,7 @@ class MagazineController(
         @RequestBody magazineCreateRequest: MagazineCreateRequest
     ) = magazineService.createMagazine(magazineCreateRequest)
 
-    @Operation(summary = "[어드민] 매거진 수정", description = "어드민 전용")
+    @Operation(summary = " 매거진 수정", description = "어드민 전용")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "정상응답"),
         ApiResponse(responseCode = "401", description = "인증 필요"),
@@ -117,7 +125,7 @@ class MagazineController(
         @RequestBody @Valid magazineUpdateRequest: MagazineUpdateRequest
     ) = magazineService.updateMagazine(magazineId, magazineUpdateRequest)
 
-    @Operation(summary = "[어드민] 매거진 이미지 등록", description = "어드민 전용")
+    @Operation(summary = " 매거진 이미지 등록", description = "어드민 전용")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "정상응답"),
         ApiResponse(responseCode = "401", description = "인증 필요"),
@@ -133,7 +141,7 @@ class MagazineController(
         @RequestBody @Valid multipartFiles: List<MultipartFile>,
     ) = magazineService.createMagazineImage(magazineId, multipartFiles)
 
-    @Operation(summary = "[어드민] 매거진 이미지 수정", description = "어드민 전용")
+    @Operation(summary = " 매거진 이미지 수정", description = "어드민 전용")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "정상응답"),
         ApiResponse(responseCode = "401", description = "인증 필요"),
@@ -150,7 +158,7 @@ class MagazineController(
         @RequestBody @Valid multipartFile: MultipartFile,
     ) = magazineService.updateMagazineImage(magazineId, imageId, multipartFile)
 
-    @Operation(summary = "[어드민] 매거진 이미지 메인이미지로 변경", description = "어드민 전용")
+    @Operation(summary = " 매거진 이미지 메인이미지로 변경", description = "어드민 전용")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "정상응답"),
         ApiResponse(responseCode = "401", description = "인증 필요"),
@@ -167,7 +175,7 @@ class MagazineController(
     ) = magazineService.setMagazineMainImage(magazineId, imageId)
 
 
-    @Operation(summary = "[어드민] 매거진 이미지 제거", description = "어드민 전용")
+    @Operation(summary = " 매거진 이미지 제거", description = "어드민 전용")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "정상응답"),
         ApiResponse(responseCode = "401", description = "인증 필요"),
@@ -183,7 +191,7 @@ class MagazineController(
         @PathVariable imageId: Long,
     ) = magazineService.deleteMagazineImage(magazineId, imageId)
 
-    @Operation(summary = "[어드민] 매거진 제거", description = "어드민 전용")
+    @Operation(summary = " 매거진 제거", description = "어드민 전용")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "정상응답"),
         ApiResponse(responseCode = "401", description = "인증 필요"),

@@ -22,7 +22,7 @@ data class MagazineResponse(
     var url: String = EMPTY_STRING,
     var author: String = EMPTY_STRING,
     var category: CategoryResponse? = null,
-    var keywords: List<KeywordResponse> = emptyList(),
+    var tags: List<TagResponse> = emptyList(),
     var images: List<MagazineImageResponse> = emptyList()
 )
 
@@ -32,7 +32,7 @@ data class MagazineCreateRequest(
     var url: String = EMPTY_STRING,
     var author: String = EMPTY_STRING,
     var categoryId: Long? = null,
-    var keywordIds: List<Long>? = null
+    var tagIds: List<Long>? = null
 )
 
 data class MagazineUpdateRequest(
@@ -41,7 +41,7 @@ data class MagazineUpdateRequest(
     var url: String? = null,
     var author: String? = null,
     val categoryId: Long? = null,
-    val keywordIds: List<Long>? = null
+    val tagIds: List<Long>? = null
 )
 
 @Mapper
@@ -59,7 +59,7 @@ interface MagazineMapper : ResponseMapper<MagazineResponse, Magazine>, RequestMa
 }
 
 fun Magazine.toResponse() = MagazineMapper.INSTANCE.fromEntity(this).also { response ->
-    response.keywords = this.magazineKeywords.map { it.keyword.toResponse() }
+    response.tags = this.magazineTags.map { it.tag.toResponse() }
 }
 
 fun MagazineCreateRequest.toEntity() = MagazineMapper.INSTANCE.toEntity(this)

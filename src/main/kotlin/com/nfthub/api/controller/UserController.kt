@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/v1/users")
 @RestController
 class UserController {
-    @Operation(summary = "유저 단일 조회 [어드민]")
+    @Operation(summary = "유저 단일 조회 ")
     @GetMapping("/{userId}")
     fun getUserResponse(@PathVariable userId: String) {
     }
 
-    @Operation(summary = "유저 리스트 조회 [어드민]")
+    @Operation(summary = "유저 리스트 조회 ")
     @GetMapping
     fun getUserResponses() {
     }

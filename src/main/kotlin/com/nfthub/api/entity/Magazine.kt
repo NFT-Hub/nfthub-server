@@ -24,7 +24,7 @@ class Magazine(
     var category: Category? = null,
 
     @OneToMany(mappedBy = "magazine", orphanRemoval = true, cascade = [CascadeType.ALL])
-    var magazineKeywords: List<MagazineKeyword> = emptyList(),
+    var magazineTags: List<MagazineTag> = emptyList(),
 
     @OneToMany(mappedBy = "magazine", orphanRemoval = true, cascade = [CascadeType.ALL])
     var images: MutableList<MagazineImage> = mutableListOf(),
@@ -34,14 +34,14 @@ class Magazine(
 
 @Entity
 @Table
-class MagazineKeyword(
+class MagazineTag(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     var id: Long = 0,
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     var magazine: Magazine = Magazine(),
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    var keyword: Keyword = Keyword()
+    var tag: Tag = Tag()
 )
 
 @Entity

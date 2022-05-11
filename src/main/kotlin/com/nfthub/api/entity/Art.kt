@@ -19,7 +19,7 @@ class Art(
     var artist: Artist = Artist(),
 
     @OneToMany(mappedBy = "art", orphanRemoval = true, cascade = [CascadeType.ALL])
-    var artKeywords: List<ArtKeyword> = emptyList(),
+    var artTags: List<ArtTag> = emptyList(),
 
     @OneToMany(mappedBy = "art", orphanRemoval = true, cascade = [CascadeType.ALL])
     var artImages: List<ArtImage> = emptyList(),
@@ -28,14 +28,14 @@ class Art(
 
 @Entity
 @Table
-class ArtKeyword(
+class ArtTag(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     var id: Long = 0,
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     var art: Art = Art(),
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    var keyword: Keyword = Keyword(),
+    var tag: Tag = Tag(),
 )
 
 @Entity
