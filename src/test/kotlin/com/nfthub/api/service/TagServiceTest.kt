@@ -40,8 +40,22 @@ class TagServiceTest(
         tagRepository.save(Tag(name = "tag1"))
         tagRepository.save(Tag(name = "tag2"))
         tagRepository.save(Tag(name = "tag3"))
-        val list = tagService.getTagResponses()
+        val list = tagService.getTagResponses(null)
         assertEquals(3, list.size)
+
+    }
+
+    @Test
+    fun `getTagResponses param keyword - 정상적으로 조회되면, 유사한 키워드 추천`() {
+        tagRepository.save(Tag(name = "안녕하세요"))
+        tagRepository.save(Tag(name = "안녕하세"))
+        tagRepository.save(Tag(name = "안녕하"))
+        val tags1 = tagService.getTagResponses(likeKeyword = "녕하")
+        val tags2 = tagService.getTagResponses(likeKeyword = "안녕하세")
+        val tags3 = tagService.getTagResponses(likeKeyword = "세요")
+        assertEquals(3, tags1.size)
+        assertEquals(2, tags2.size)
+        assertEquals(1, tags3.size)
 
     }
 

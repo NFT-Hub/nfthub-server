@@ -2,13 +2,11 @@ package com.nfthub.api.service
 
 import com.nfthub.api.controller.NotFoundException
 import com.nfthub.api.dto.*
-import com.nfthub.api.entity.MagazineImage
-import com.nfthub.api.entity.MagazineTag
+import com.nfthub.api.entity.*
 import com.nfthub.api.repository.MagazineImageRepository
 import com.nfthub.api.repository.MagazineRepository
 import com.nfthub.api.repository.MagazineTagRepository
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -26,12 +24,38 @@ class MagazineService(
     private val s3Service: S3Service
 ) {
 
+
     fun getMagazineResponse(magazineId: Long): MagazineResponse = getMagazineOrThrow(magazineId).toResponse()
 
     fun getMagazineResponses(
-        pageable: Pageable, tagIds: List<Long>?, categoryIds: List<Long>?, searchTag: String?
+        pageable: Pageable, tagIds: List<Long>?, categoryIds: List<Long>?, searchKeyword: String?
     ): Page<MagazineResponse> {
-        return PageImpl(listOf())
+        return magazineRepository.findAll({ magazine, query, cb ->
+            query.distinct(true)
+            cb.run {
+                and(*listOfNotNull(
+                    categoryIds?.let {
+                        or(
+                            *it.map { categoryId ->
+                                equal(
+                                    magazine.join<Magazine, Category>(Magazine_.Category.s)
+                                        .get<String>(Category_.Name.s),
+                                    categoryId
+                                )
+                            }.toTypedArray()
+                        )
+                    },
+                    tagIds?.let {
+                        magazine.join<Magazine, MagazineTag>(Magazine_.MagazineTags.s)
+                            .join<MagazineTag, Tag>(MagazineTag_.Tag.s)
+                            .get<String>(Tag_.Id.s).`in`(it)
+                    },
+                    searchKeyword?.let {
+                        like(magazine.get(Magazine_.Title.s), "%$searchKeyword%")
+                    }
+                ).toTypedArray())
+            }
+        }, pageable).map { it.toResponse() }
     }
 
     fun getMagazineOrThrow(magazineId: Long) =

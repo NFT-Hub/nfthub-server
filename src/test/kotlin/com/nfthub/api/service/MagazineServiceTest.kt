@@ -16,6 +16,7 @@ import io.mockk.every
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.mock.web.MockMultipartFile
 import javax.persistence.EntityManager
@@ -39,18 +40,22 @@ class MagazineServiceTest(
     @MockkBean
     private lateinit var s3Service: S3Service
 
+    val pageable = PageRequest.of(0, 100)
+
     @BeforeAll
     fun setup() {
         categories = categoryRepository.saveAll(
             listOf(
                 Category(name = "category1"),
-                Category(name = "category2")
+                Category(name = "category2"),
+                Category(name = "category3"),
             )
         )
         tags = tagRepository.saveAll(
             listOf(
                 Tag(name = "tag1"),
-                Tag(name = "tag2")
+                Tag(name = "tag2"),
+                Tag(name = "tag3"),
             )
         )
     }
@@ -216,6 +221,38 @@ class MagazineServiceTest(
     @Test
     fun `getMagazineResponses - param, tagIds`() {
 
+        magazineService.createMagazine(
+            MagazineCreateRequest(tagIds = listOf(tags[0].id, tags[1].id, tags[2].id))
+        )
+        magazineService.createMagazine(
+            MagazineCreateRequest(tagIds = listOf(tags[0].id, tags[1].id))
+        )
+        magazineService.createMagazine(
+            MagazineCreateRequest(tagIds = listOf(tags[0].id))
+        )
+
+        assertEquals(
+            3,
+            magazineService.getMagazineResponses(pageable, listOf(tags[0].id), null, null).content.size
+        )
+        assertEquals(
+            3,
+            magazineService.getMagazineResponses(pageable, listOf(tags[0].id, tags[1].id), null, null).content.size
+        )
+        assertEquals(
+            3,
+            magazineService.getMagazineResponses(
+                pageable,
+                listOf(tags[0].id, tags[1].id, tags[2].id),
+                null,
+                null
+            ).content.size
+        )
+        assertEquals(
+            1,
+            magazineService.getMagazineResponses(pageable, listOf(tags[2].id), null, null).content.size
+        )
+
     }
 
     @Test
@@ -224,13 +261,45 @@ class MagazineServiceTest(
     }
 
     @Test
-    fun `getMagazineResponses param, searchTag`() {
-
+    fun `getMagazineResponses param, searchKeyword`() {
+        magazineService.createMagazine(
+            MagazineCreateRequest(title = "testA")
+        )
+        magazineService.createMagazine(
+            MagazineCreateRequest(title = "testAB")
+        )
+        magazineService.createMagazine(
+            MagazineCreateRequest(title = "testABC")
+        )
+        assertEquals(
+            3,
+            magazineService.getMagazineResponses(pageable, null, null, "test").content.size
+        )
+        assertEquals(
+            3,
+            magazineService.getMagazineResponses(pageable, null, null, "testA").content.size
+        )
+        assertEquals(
+            0,
+            magazineService.getMagazineResponses(pageable, null, null, "testC").content.size
+        )
+        assertEquals(
+            2,
+            magazineService.getMagazineResponses(pageable, null, null, "B").content.size
+        )
     }
 
     @Test
     fun `getMagazineResponse - param, categoryId and searchTag and tagIds`() {
-
+        magazineService.createMagazine(
+            MagazineCreateRequest(
+                title = "title",
+                categoryId = categories[0].id,
+                tagIds = listOf(
+                    tags[0].id, tags[1].id, tags[2].id
+                )
+            )
+        )
     }
 
 

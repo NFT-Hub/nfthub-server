@@ -15,6 +15,12 @@ class Category(
     var categoryGroup: CategoryGroup? = null
 )
 
+enum class Category_(val s: String) {
+    Id("id"),
+    Name("name"),
+    CategoryGroup("categoryGroup")
+}
+
 @Entity
 @Table
 class CategoryGroup(
@@ -26,3 +32,8 @@ class CategoryGroup(
     @OneToMany(mappedBy = "categoryGroup")
     var categories: List<Category> = emptyList()
 )
+
+enum class CategoryGroup_(val s: String) {
+    Name("name"),
+    Categories("categories")
+}

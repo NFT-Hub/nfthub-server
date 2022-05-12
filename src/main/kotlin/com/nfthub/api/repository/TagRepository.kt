@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface TagRepository : JpaRepository<Tag, Long> {
     fun findByName(name: String): Tag?
+    fun findAllByNameLike(name: String): List<Tag>
 }

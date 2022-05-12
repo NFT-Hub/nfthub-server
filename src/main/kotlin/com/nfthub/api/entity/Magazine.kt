@@ -28,8 +28,13 @@ class Magazine(
 
     @OneToMany(mappedBy = "magazine", orphanRemoval = true, cascade = [CascadeType.ALL])
     var images: MutableList<MagazineImage> = mutableListOf(),
+) : BaseTimeEntity()
 
-    ) : BaseTimeEntity()
+enum class Magazine_(val s: String) {
+    Category("category"),
+    MagazineTags("magazineTags"),
+    Title("title")
+}
 
 
 @Entity
@@ -43,6 +48,12 @@ class MagazineTag(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     var tag: Tag = Tag()
 )
+
+enum class MagazineTag_(val s: String) {
+    Id("id"),
+    Magazine("magazine"),
+    Tag("tag")
+}
 
 @Entity
 @Table

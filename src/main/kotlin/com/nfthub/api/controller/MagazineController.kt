@@ -77,9 +77,9 @@ class MagazineController(
         @Parameter(hidden = true) pageable: Pageable,
         @RequestParam(required = false) tagIds: List<Long>?,
         @RequestParam(required = false) categoryIds: List<Long>?,
-        @RequestParam(required = false) searchTag: String?
+        @RequestParam(required = false) searchKeyword: String?
     ): Page<MagazineResponse> = magazineService.getMagazineResponses(
-        pageable, tagIds, categoryIds, searchTag
+        pageable, tagIds, categoryIds, searchKeyword
     )
 
     @Operation(summary = "매거진 조회")

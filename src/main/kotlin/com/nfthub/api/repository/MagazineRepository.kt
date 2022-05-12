@@ -4,10 +4,11 @@ import com.nfthub.api.entity.Magazine
 import com.nfthub.api.entity.MagazineImage
 import com.nfthub.api.entity.MagazineTag
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
 @Repository
-interface MagazineRepository : JpaRepository<Magazine, Long> {
+interface MagazineRepository : JpaRepository<Magazine, Long>, JpaSpecificationExecutor<Magazine> {
 }
 
 @Repository

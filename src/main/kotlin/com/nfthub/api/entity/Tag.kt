@@ -12,3 +12,8 @@ class Tag(
     @Column(unique = true, nullable = false)
     var name: String = EMPTY_STRING
 )
+
+enum class Tag_(val s: String) {
+    Id("id"),
+    Name("name")
+}
