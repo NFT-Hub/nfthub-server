@@ -91,7 +91,7 @@ class MagazineServiceTest(
                 description = "description",
                 category = categories[0].toResponse(),
                 tags = tags.map { it.toResponse() }
-            ).toString(), createdMagazineResponse.toString()
+            ), createdMagazineResponse
         )
     }
 
@@ -155,7 +155,7 @@ class MagazineServiceTest(
         val magazine = magazineService.updateMagazineImage(createdMagazine.id, createdMagazine.images[0].id, mockFileB)
 
         // then
-        assertEquals(true, magazine?.images?.all { it.url == "b" })
+        assertEquals(true, magazine.images.all { it.url == "b" })
     }
 
     @Test
@@ -174,7 +174,7 @@ class MagazineServiceTest(
         val createdMagazine = magazineService.createMagazineImage(savedMagazine.id, listOf(mockFileA))
         val createdMagazineImageId = createdMagazine.images[0].id
         val magazine = magazineService.deleteMagazineImage(createdMagazine.id, createdMagazineImageId)
-        assertTrue { magazine?.images?.size == 0 }
+        assertTrue { magazine.images.isEmpty() }
 
     }
 

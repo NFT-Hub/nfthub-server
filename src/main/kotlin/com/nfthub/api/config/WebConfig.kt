@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class WebConfig : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOrigins("*")
+            .allowedOriginPatterns("*")
             .allowedMethods(
                 HttpMethod.OPTIONS.name,
                 HttpMethod.GET.name,

@@ -11,7 +11,7 @@ phases:
       - echo Build completed on `date`
       - echo $(basename ./build/libs/*.jar)
       - pwd
-      - cp ./build/libs/*.jar ./mall.jar
+      - cp ./build/libs/*.jar ./api.jar
 
 cache:
   paths:
@@ -19,7 +19,7 @@ cache:
 
 artifacts:
   files:
-    - 'mall.jar'
+    - 'api.jar'
     - Procfile
   discard-paths: yes
 
