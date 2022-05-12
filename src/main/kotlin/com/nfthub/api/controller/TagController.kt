@@ -28,7 +28,7 @@ class TagController(
         ]
     )
     fun getTags(
-        @RequestParam keyword: String
+        @RequestParam(required = false) keyword: String?
     ) = tagService.getTagResponses(keyword)
 
     @Operation(summary = "태그 단일 조회")
@@ -37,16 +37,16 @@ class TagController(
         @PathVariable tagId: Long
     ) = tagService.getTagOrThrow(tagId)
 
-    @Operation(summary = "태그 이름으로 조회")
+    @Operation(summary = "태그 이름으로 조회, 정확히 일치하는 태그 조회")
     @GetMapping("/name")
     fun getTagByName(
-        @RequestBody name: String
+        @RequestParam(required = true) name: String
     ) = tagService.getTagByNameOrThrow(name)
 
-    @Operation(summary = "키워드로 태그 검색")
+    @Operation(summary = "키워드로 태그 검색, 유사 태그 조회")
     @GetMapping("/search")
     fun getTagsByLikeKeyword(
-        @RequestBody keyword: String
+        @RequestParam(required = true) keyword: String
     ) = tagService.getTagsByLikeKeyword(keyword)
 }
 
