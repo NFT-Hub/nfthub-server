@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*
 class TagController(
     private val tagService: TagService
 ) {
-
     @Operation(summary = "키워드 리스트 조회")
     @GetMapping
     fun getTags() = tagService.getTagResponses()
