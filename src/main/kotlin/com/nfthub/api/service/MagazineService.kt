@@ -141,9 +141,10 @@ class MagazineService(
                 // 기존꺼 삭제
                 this.magazineTags.clear()
                 // 새로운거 등록
-                this.magazineTags = magazineTagRepository.saveAll(
-                    tagIds.map { MagazineTag(magazine = this, tag = tagService.getTagOrThrow(it)) }
-                )
+                this.magazineTags.addAll(
+                    magazineTagRepository.saveAll(
+                        tagIds.map { MagazineTag(magazine = this, tag = tagService.getTagOrThrow(it)) }
+                    ))
             }
         }.toResponse()
 
