@@ -1,5 +1,6 @@
 package com.nfthub.api.service
 
+import com.nfthub.api.controller.ConflictException
 import com.nfthub.api.controller.NotFoundException
 import com.nfthub.api.dto.TagResponse
 import com.nfthub.api.dto.toResponse
@@ -24,8 +25,11 @@ class TagService(
     fun getTagsByLikeKeyword(keyword: String) =
         tagRepository.findAllByNameLike("%$keyword%").map { it.toResponse() }
 
+
     fun getTagOrThrow(tagId: Long) =
         tagRepository.findByIdOrNull(tagId) ?: throw NotFoundException("not found tagId: $tagId")
+
+    fun getTagByNameOrNull(name: String): Tag? = tagRepository.findByName(name)
 
     fun getTagByNameOrThrow(name: String): TagResponse {
         val tag = tagRepository.findByName(name) ?: throw NotFoundException("tag not exist: name: $name ")
@@ -34,7 +38,7 @@ class TagService(
 
     @Transactional
     fun createTag(name: String): Tag {
-        getTagByNameOrThrow(name)
+        if (getTagByNameOrNull(name) != null) throw ConflictException("tag already exist: $name")
         return tagRepository.save(
             Tag(name = name)
         )

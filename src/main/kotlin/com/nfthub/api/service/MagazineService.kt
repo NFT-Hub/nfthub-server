@@ -39,7 +39,7 @@ class MagazineService(
                             *it.map { categoryId ->
                                 equal(
                                     magazine.join<Magazine, Category>(Magazine_.Category.s)
-                                        .get<String>(Category_.Name.s),
+                                        .get<String>(Category_.Id.s),
                                     categoryId
                                 )
                             }.toTypedArray()
@@ -161,4 +161,8 @@ class MagazineService(
     fun MutableList<MagazineImage>.findImage(magazineId: Long, imageId: Long) =
         this.find { it.id == imageId }
             ?: throw NotFoundException("magazineId: $magazineId, imageId: $imageId not exist")
+
+    fun test() {
+
+    }
 }

@@ -257,7 +257,29 @@ class MagazineServiceTest(
 
     @Test
     fun `getMagazineResponses - param, categoryId`() {
-
+        magazineService.createMagazine(
+            MagazineCreateRequest(title = "testA", categoryId = categories[0].id)
+        )
+        magazineService.createMagazine(
+            MagazineCreateRequest(title = "testAB", categoryId = categories[1].id)
+        )
+        assertEquals(
+            categories[0].id,
+            magazineService.getMagazineResponses(pageable, null, listOf(categories[0].id), null).content[0].category?.id
+        )
+        assertEquals(
+            categories[1].id,
+            magazineService.getMagazineResponses(pageable, null, listOf(categories[1].id), null).content[0].category?.id
+        )
+        assertEquals(
+            2,
+            magazineService.getMagazineResponses(
+                pageable,
+                null,
+                listOf(categories[0].id, categories[1].id),
+                null
+            ).content.size
+        )
     }
 
     @Test
@@ -289,18 +311,6 @@ class MagazineServiceTest(
         )
     }
 
-    @Test
-    fun `getMagazineResponse - param, categoryId and searchTag and tagIds`() {
-        magazineService.createMagazine(
-            MagazineCreateRequest(
-                title = "title",
-                categoryId = categories[0].id,
-                tagIds = listOf(
-                    tags[0].id, tags[1].id, tags[2].id
-                )
-            )
-        )
-    }
 
 
 }
