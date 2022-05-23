@@ -30,22 +30,3 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 30MB
-
-jwt:
-  secret: fdjfkljfklewjibvjdksjfkljklji89089890vdsvnklsdjfaksj9dsjfkljklsdfjdjsjsdkl2
-
-cloud:
-  aws:
-    stack:
-      auto: false
-    credentials:
-      access-key: AKIAYQDDEICVDCAFFLOY
-      secret-key: 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
-    region:
-      static: ap-northeast-2
-
-nfthub:
-  aws:
-    s3:
-      bucketName: narea-mall-develop
-
