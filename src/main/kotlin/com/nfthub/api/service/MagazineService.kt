@@ -139,7 +139,7 @@ class MagazineService(
             request.categoryId?.let { category = categoryService.getCategoryOrThrow(it) }
             request.tagIds?.let { tagIds ->
                 // 기존꺼 삭제
-                magazineTagRepository.deleteAll(this.magazineTags)
+                this.magazineTags.clear()
                 // 새로운거 등록
                 this.magazineTags = magazineTagRepository.saveAll(
                     tagIds.map { MagazineTag(magazine = this, tag = tagService.getTagOrThrow(it)) }

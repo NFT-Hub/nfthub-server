@@ -24,7 +24,7 @@ class Magazine(
     var category: Category? = null,
 
     @OneToMany(mappedBy = "magazine", orphanRemoval = true, cascade = [CascadeType.ALL])
-    var magazineTags: List<MagazineTag> = emptyList(),
+    var magazineTags: MutableList<MagazineTag> = mutableListOf(),
 
     @OneToMany(mappedBy = "magazine", orphanRemoval = true, cascade = [CascadeType.ALL])
     var images: MutableList<MagazineImage> = mutableListOf(),
