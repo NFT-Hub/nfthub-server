@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameters
 import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "tag api")
@@ -57,13 +58,20 @@ class ManageTagController(
     private val tagService: TagService
 ) {
     @Operation(summary = "태그 생성", description = "어드민 전용")
-    @PostMapping
+    @PostMapping(
+        consumes = [MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     fun createTag(
         @RequestBody name: String
     ) = tagService.createTag(name)
 
     @Operation(summary = "태그 수정", description = "어드민 전용")
-    @PatchMapping("/{tagId}")
+    @PatchMapping(
+        "/{tagId}",
+        consumes = [MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
     fun updateTag(
         @PathVariable tagId: Long,
         @RequestBody name: String
