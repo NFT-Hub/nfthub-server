@@ -32,7 +32,6 @@ class MagazineServiceTest(
     @Autowired val magazineRepository: MagazineRepository,
     @Autowired val categoryRepository: CategoryRepository,
     @Autowired val tagRepository: TagRepository,
-    @Autowired val em: EntityManager
 ) {
     private lateinit var categories: List<Category>
     private lateinit var tags: List<Tag>
@@ -104,8 +103,9 @@ class MagazineServiceTest(
     fun `updateMagazine`() {
         val createdMagazineResponse = magazineService.createMagazine(MagazineCreateRequest(
             title = "title", description = "description",
-            categoryId = categories[0].id, tagIds = tags.map { it.id }
+            categoryId = categories[0].id, tagIds = tags.map { it.id },
         ))
+
         val magazineResponse = magazineService.updateMagazine(
             createdMagazineResponse.id, MagazineUpdateRequest(
                 title = "newTitle",
@@ -113,6 +113,7 @@ class MagazineServiceTest(
                 tagIds = listOf(tags[1].id)
             )
         )
+
         assertEquals(
             MagazineResponse(
                 id = magazineResponse.id,
@@ -120,9 +121,11 @@ class MagazineServiceTest(
                 category = categories[1].toResponse(), tags = listOf(tags[1].toResponse())
             ), magazineResponse
         )
+
     }
 
     @Test
+    @Transactional
     fun `creteMagazineImage`() {
         // given
         val createdMagazine = magazineRepository.save(Magazine())
@@ -233,11 +236,11 @@ class MagazineServiceTest(
 
         assertEquals(
             3,
-            magazineService.getMagazineResponses(pageable, listOf(tags[0].id), null, null).content.size
+            magazineService.getMagazineResponses(pageable, listOf(tags[0].id), null, null, null).content.size
         )
         assertEquals(
             3,
-            magazineService.getMagazineResponses(pageable, listOf(tags[0].id, tags[1].id), null, null).content.size
+            magazineService.getMagazineResponses(pageable, listOf(tags[0].id, tags[1].id), null, null, null).content.size
         )
         assertEquals(
             3,
@@ -245,12 +248,12 @@ class MagazineServiceTest(
                 pageable,
                 listOf(tags[0].id, tags[1].id, tags[2].id),
                 null,
-                null
+                null, null
             ).content.size
         )
         assertEquals(
             1,
-            magazineService.getMagazineResponses(pageable, listOf(tags[2].id), null, null).content.size
+            magazineService.getMagazineResponses(pageable, listOf(tags[2].id), null, null, null).content.size
         )
 
     }
@@ -265,11 +268,11 @@ class MagazineServiceTest(
         )
         assertEquals(
             categories[0].id,
-            magazineService.getMagazineResponses(pageable, null, listOf(categories[0].id), null).content[0].category?.id
+            magazineService.getMagazineResponses(pageable, null, listOf(categories[0].id), null, null).content[0].category?.id
         )
         assertEquals(
             categories[1].id,
-            magazineService.getMagazineResponses(pageable, null, listOf(categories[1].id), null).content[0].category?.id
+            magazineService.getMagazineResponses(pageable, null, listOf(categories[1].id), null, null).content[0].category?.id
         )
         assertEquals(
             2,
@@ -277,7 +280,7 @@ class MagazineServiceTest(
                 pageable,
                 null,
                 listOf(categories[0].id, categories[1].id),
-                null
+                null, null
             ).content.size
         )
     }
@@ -295,19 +298,19 @@ class MagazineServiceTest(
         )
         assertEquals(
             3,
-            magazineService.getMagazineResponses(pageable, null, null, "test").content.size
+            magazineService.getMagazineResponses(pageable, null, null, "test", null).content.size
         )
         assertEquals(
             3,
-            magazineService.getMagazineResponses(pageable, null, null, "testA").content.size
+            magazineService.getMagazineResponses(pageable, null, null, "testA", null).content.size
         )
         assertEquals(
             0,
-            magazineService.getMagazineResponses(pageable, null, null, "testC").content.size
+            magazineService.getMagazineResponses(pageable, null, null, "testC", null).content.size
         )
         assertEquals(
             2,
-            magazineService.getMagazineResponses(pageable, null, null, "B").content.size
+            magazineService.getMagazineResponses(pageable, null, null, "B", null).content.size
         )
     }
 

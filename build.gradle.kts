@@ -33,7 +33,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web") {
+        exclude("org.springframework.boot", "spring-boot-starter-tomcat")
+    }
+    implementation("org.springframework.boot:spring-boot-starter-undertow")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     // map-struct
@@ -83,12 +86,24 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
 
-    //testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+
+    // feign client
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:3.1.2")
+    implementation("io.github.openfeign:feign-okhttp:11.8")
+//
+//
+//    //testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 
 }
 
 tasks {
     compileKotlin {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+            jvmTarget = "11"
+        }
+    }
+    compileTestKotlin {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
             jvmTarget = "11"

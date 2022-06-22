@@ -1,9 +1,6 @@
 package com.nfthub.api.auth
 
-import io.jsonwebtoken.Claims
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
@@ -52,7 +49,8 @@ class JwtTokenProvider(@Value("\${jwt.secret}") secretKey: String) {
 
     fun getAuthenticationFromAccessToken(accessToken: String): Authentication {
         // 토큰 복호화
-        val claims = parseClaims(accessToken)
+        val jwsClaims = parseClaims(accessToken)
+        val claims = jwsClaims.body
 
         val authorities: Collection<GrantedAuthority> = arrayListOf()
         val principal: UserDetails = User(claims.subject, "", authorities)
@@ -64,11 +62,7 @@ class JwtTokenProvider(@Value("\${jwt.secret}") secretKey: String) {
         return true
     }
 
-    private fun parseClaims(accessToken: String): Claims {
-        return try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).body
-        } catch (e: ExpiredJwtException) {
-            e.claims
-        }
+    private fun parseClaims(accessToken: String): Jws<Claims> {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken)
     }
 }

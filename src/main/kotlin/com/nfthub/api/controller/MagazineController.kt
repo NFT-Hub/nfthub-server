@@ -50,36 +50,21 @@ class MagazineController(
                         + "디폴트 정렬순서는 오름차순, 다중 정렬 가능",
                 name = "sort",
                 array = ArraySchema(schema = Schema(type = "integer", defaultValue = "view,desc"))
-            ),
-            Parameter(
-                `in` = ParameterIn.QUERY,
-                description = "키워드 입력, 여러개 사용 가능",
-                name = "tagId",
-                array = ArraySchema(schema = Schema(type = "integer"))
-            ),
-            Parameter(
-                `in` = ParameterIn.QUERY,
-                description = "카테고리 입력, 여러개 사용 가능",
-                name = "categoryId",
-                array = ArraySchema(schema = Schema(type = "integer"))
-            ),
-            Parameter(
-                `in` = ParameterIn.QUERY,
-                description = "검색어 입력",
-                name = "searchTag",
-                schema = Schema(type = "String")
-            ),
+            )
         ]
     )
+    // searchTitleKeyword
+    // searchTagKeyword
     @GetMapping
     fun getMagazineResponses(
         @PageableDefault
         @Parameter(hidden = true) pageable: Pageable,
         @RequestParam(required = false) tagIds: List<Long>?,
         @RequestParam(required = false) categoryIds: List<Long>?,
-        @RequestParam(required = false) searchKeyword: String?
+        @RequestParam(required = false) searchTitleKeyword: String?,
+        @RequestParam(required = false) searchTagKeyword: String?
     ): Page<MagazineResponse> = magazineService.getMagazineResponses(
-        pageable, tagIds, categoryIds, searchKeyword
+        pageable, tagIds, categoryIds, searchTitleKeyword, searchTagKeyword
     )
 
     @Operation(summary = "매거진 조회")
