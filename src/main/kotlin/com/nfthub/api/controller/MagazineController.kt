@@ -123,8 +123,8 @@ class ManageMagazineController(
     )
     fun createMagazineImage(
         @PathVariable magazineId: Long,
-        @RequestBody @Valid multipartFiles: List<MultipartFile>,
-    ) = magazineService.createMagazineImage(magazineId, multipartFiles)
+        @RequestPart("files", required = true) files: List<MultipartFile>,
+    ) = magazineService.createMagazineImage(magazineId, files)
 
     @Operation(summary = " 매거진 이미지 수정", description = "어드민 전용")
     @ApiResponses(
@@ -140,8 +140,8 @@ class ManageMagazineController(
     fun updateMagazineImage(
         @PathVariable magazineId: Long,
         @PathVariable imageId: Long,
-        @RequestBody @Valid multipartFile: MultipartFile,
-    ) = magazineService.updateMagazineImage(magazineId, imageId, multipartFile)
+        @RequestPart("file", required = true) file: MultipartFile,
+    ) = magazineService.updateMagazineImage(magazineId, imageId, file)
 
     @Operation(summary = " 매거진 이미지 메인이미지로 변경", description = "어드민 전용")
     @ApiResponses(
