@@ -41,6 +41,7 @@ out/
 
 ### local enviroment
 env.sh
-application.yml
+# all application-local properties files include subdirectories
+application-local.properties
 src/main/resources/application.properties
 

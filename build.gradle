@@ -1,0 +1,87 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
+plugins {
+    id 'java'
+    id "org.springframework.boot" version "2.4.1"
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
+}
+
+// java version 11
+sourceCompatibility = 11
+
+group = 'com.nfthub'
+
+repositories {
+    mavenCentral()
+}
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: "org.springframework.boot"
+    apply plugin: "io.spring.dependency-management"
+
+    
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation "org.springframework.boot:spring-boot-starter"
+        // rest web
+        implementation "org.springframework.boot:spring-boot-starter-web"
+        // validation
+        implementation "org.springframework.boot:spring-boot-starter-validation"
+        // jpa
+        implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+        // jpa data envers
+        implementation "org.springframework.data:spring-data-envers"
+        // aws
+        implementation "org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE"
+        // mysql
+        implementation "mysql:mysql-connector-java"
+        // lombok
+        implementation "org.projectlombok:lombok"
+        annotationProcessor "org.projectlombok:lombok"
+        // spring docs open api
+        implementation "org.springdoc:springdoc-openapi-ui:1.5.12"
+        // swagger
+        // jwt
+        implementation "io.jsonwebtoken:jjwt:0.9.1"
+        // spring security
+        implementation "org.springframework.boot:spring-boot-starter-security"
+        // mapstruct
+        implementation "org.mapstruct:mapstruct:1.4.2.Final"
+        annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
+
+        // querydsl
+        implementation "com.querydsl:querydsl-jpa:4.4.0"
+        annotationProcessor "com.querydsl:querydsl-apt:4.4.0:jpa"
+
+        // querydsl jakarta
+        annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+        annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+
+        // test
+        testImplementation "org.springframework.boot:spring-boot-starter-test"
+        // test h2 database delevelopment only
+        testImplementation "com.h2database:h2"
+        // feign client
+        // implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+    }
+}
+
+project("core") {
+    dependencies {
+    }
+    bootJar.enabled = false
+    jar.enabled = true
+}
+
+project("api") {
+    dependencies {
+        implementation project(":core")
+    }
+}
+
+bootJar.enabled = false
+jar.enabled = false
