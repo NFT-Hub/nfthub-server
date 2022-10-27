@@ -81,12 +81,6 @@ public class MagazineServiceTest {
     }
 
     @Test
-    @DisplayName("getMagazinePageRes - 매거진 페이지 조회")
-    public void getMagazinePageRes() {
-
-    }
-
-    @Test
     @DisplayName("createMagazine - 생성되는지 확인")
     public void createMagazine() {
         MagazineRequest request = MagazineRequest.builder()

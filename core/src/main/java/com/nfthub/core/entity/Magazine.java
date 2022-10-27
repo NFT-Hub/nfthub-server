@@ -1,6 +1,7 @@
 package com.nfthub.core.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 @Entity
 @Table
 @Getter
+@NoArgsConstructor
 public class Magazine extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +36,13 @@ public class Magazine extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "magazine", cascade = CascadeType.ALL)
     private List<MagazineImage> magazineImages = new ArrayList<>();
+
+    public Magazine(String title, String description, String url, String author) {
+        this.title = title;
+        this.description = description;
+        this.url = url;
+        this.author = author;
+    }
 
     public void setTitle(String title) {
         this.title = title;

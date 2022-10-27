@@ -83,5 +83,15 @@ project("api") {
     }
 }
 
+project("crawler") {
+    dependencies {
+        implementation project(":core")
+        // batch application
+        implementation "org.springframework.boot:spring-boot-starter-batch"
+        // batch test
+        testImplementation "org.springframework.boot:spring-boot-starter-test"
+    }
+}
+
 bootJar.enabled = false
 jar.enabled = false

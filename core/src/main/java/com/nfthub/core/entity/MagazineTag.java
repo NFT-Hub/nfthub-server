@@ -20,12 +20,15 @@ public class MagazineTag {
     @ManyToOne(fetch = FetchType.LAZY)
     private Tag tag;
 
-    public MagazineTag(Tag tag) {
+    public void setTag(Tag tag) {
         this.tag = tag;
     }
 
     public void setMagazine(Magazine magazine) {
+        if (this.magazine != null) {
+            this.magazine.getMagazineTags().remove(this);
+        }
         this.magazine = magazine;
-        magazine.getMagazineTags().add(this);
+        this.magazine.getMagazineTags().add(this);
     }
 }

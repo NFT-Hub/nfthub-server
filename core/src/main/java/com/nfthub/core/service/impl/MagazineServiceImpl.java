@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -39,7 +38,7 @@ public class MagazineServiceImpl implements MagazineService {
         Magazine magazine = getMagazine(id).orElseThrow(
                 () -> new NotFoundException("Magazine not found: requestId:" + id)
         );
-        return toResponse(magazine);
+        return MagazineService.toResponse(magazine);
     }
 
     private Optional<Magazine> getMagazine(Long id) {
@@ -54,7 +53,18 @@ public class MagazineServiceImpl implements MagazineService {
 
     @Override
     public Page<MagazineResponse> getMagazinePageRes(Pageable pageable, List<Long> tagIds, List<Long> categoryIds, List<Long> categoryGroupIds, String keyword, String tagKeyword, String categoryKeyword, String categoryGroupKeyword, String titleKeyword) {
-        return null;
+        return magazineRepository.findAllBy(
+                        pageable,
+                        tagIds,
+                        categoryIds,
+                        categoryGroupIds,
+                        keyword,
+                        tagKeyword,
+                        categoryKeyword,
+                        categoryGroupKeyword,
+                        titleKeyword
+                )
+                .map(MagazineService::toResponse);
     }
 
     @Override
@@ -64,7 +74,7 @@ public class MagazineServiceImpl implements MagazineService {
         setCategoryToMagazineIfExist(magazine, magazineRequest.getCategoryId());
         setTagsToMagazineIfExist(magazine, magazineRequest.getTagIds());
         magazineRepository.save(magazine);
-        return toResponse(magazine);
+        return MagazineService.toResponse(magazine);
     }
 
     @Override
@@ -74,7 +84,7 @@ public class MagazineServiceImpl implements MagazineService {
         setFieldsToMagazineIfExist(magazine, request);
         setCategoryToMagazineIfExist(magazine, request.getCategoryId());
         setTagsToMagazineIfExist(magazine, request.getTagIds());
-        return toResponse(magazine);
+        return MagazineService.toResponse(magazine);
     }
 
     private void setCategoryToMagazineIfExist(Magazine magazine, Long categoryId) {
@@ -97,7 +107,8 @@ public class MagazineServiceImpl implements MagazineService {
             Tag tag = tagService.getTagById(tagId).orElseThrow(() -> {
                 throw new NotFoundException("Tag not found: requestId:" + tagId);
             });
-            MagazineTag magazineTag = new MagazineTag(tag);
+            MagazineTag magazineTag = new MagazineTag();
+            magazineTag.setTag(tag);
             magazineTagRepository.save(magazineTag);
             magazineTag.setMagazine(magazine);
         });
@@ -133,7 +144,7 @@ public class MagazineServiceImpl implements MagazineService {
     public MagazineResponse createMagazineImages(Long id, List<MultipartFile> files) {
         Magazine magazine = getMagazineOrThrow(id);
         files.forEach(file -> setMagazineImageToMagazine(magazine, file));
-        return toResponse(magazine);
+        return MagazineService.toResponse(magazine);
     }
 
     private void setMagazineImageToMagazine(Magazine magazine, MultipartFile file) {
@@ -151,7 +162,7 @@ public class MagazineServiceImpl implements MagazineService {
         s3Service.deleteImage(magazineImage.getUrl());
         String imageUrl = s3Service.uploadImage(file, getMagazineImageDir(id));
         magazineImage.setUrl(imageUrl);
-        return toResponse(magazine);
+        return MagazineService.toResponse(magazine);
     }
 
     @Override
@@ -175,13 +186,6 @@ public class MagazineServiceImpl implements MagazineService {
 
     private String getMagazineImageDir(Long id) {
         return "magazineImage/" + id;
-    }
-
-    public MagazineResponse toResponse(Magazine magazine) {
-        MagazineResponse response = MagazineMapper.INSTANCE.toResponse(magazine);
-        response.setTags(magazine.getMagazineTags().stream().map(MagazineTag::getTag).map(TagService::toResponse).collect(Collectors.toList()));
-        response.setImages(magazine.getMagazineImages().stream().map(MagazineService::toResponse).collect(Collectors.toList()));
-        return response;
     }
 
     public Magazine toEntity(MagazineRequest magazineRequest) {

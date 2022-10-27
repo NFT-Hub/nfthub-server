@@ -1,3 +1,4 @@
 rootProject.name = "nfthub"
 include "api"
 include "core"
+include "crawler"

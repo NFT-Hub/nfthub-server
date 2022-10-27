@@ -2,6 +2,7 @@ package com.nfthub.core.service;
 
 import com.nfthub.core.entity.Magazine;
 import com.nfthub.core.entity.MagazineImage;
+import com.nfthub.core.entity.MagazineTag;
 import com.nfthub.core.mapper.MagazineImageMapper;
 import com.nfthub.core.mapper.MagazineMapper;
 import com.nfthub.core.request.MagazineRequest;
@@ -12,13 +13,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface MagazineService {
     static MagazineResponse toResponse(Magazine magazine) {
-        return MagazineMapper.INSTANCE.toResponse(magazine);
+        MagazineResponse response = MagazineMapper.INSTANCE.toResponse(magazine);
+        response.setTags(magazine.getMagazineTags().stream().map(MagazineTag::getTag).map(TagService::toResponse).collect(Collectors.toList()));
+        response.setImages(magazine.getMagazineImages().stream().map(MagazineService::toResponse).collect(Collectors.toList()));
+        return response;
     }
 
     static MagazineImageResponse toResponse(MagazineImage magazineImage) {
+
         return MagazineImageMapper.INSTANCE.toResponse(magazineImage);
     }
 
